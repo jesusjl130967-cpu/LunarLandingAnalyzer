@@ -1,0 +1,5 @@
+reference_id,description,kind,source_url
+diviner-mission,Diviner Lunar Radiometer instrument and public data portal,external_reference,https://diviner.ucla.edu/
+lro-mission,Lunar Reconnaissance Orbiter mission information,external_reference,https://science.nasa.gov/mission/lro/
+moon-trek,NASA Moon Trek mapping and terrain portal,external_reference,https://trek.nasa.gov/moon/
+spice-naif,NASA/JPL NAIF SPICE toolkit and kernel archive,external_reference,https://naif.jpl.nasa.gov/naif/

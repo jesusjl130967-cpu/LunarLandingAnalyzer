@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090e14">
+  <title>Lunar Landing Analyzer · Mission Control</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/moon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#overview">
+        <img src="{{ url_for('static', filename='img/mission-emblem.png') }}" alt="Emblema de la misión">
+        <span><b>SELENE<span>OPS</span></b><small>LUNAR MISSION CONTROL</small></span>
+      </a>
+      <div class="nav-label">OPERACIONES</div>
+      <nav class="side-nav">
+        <a class="active" href="#overview"><span>◫</span> Panel de misión</a>
+        <a href="#site-selection"><span>◎</span> Globo lunar</a>
+        <a href="#analysis"><span>⌁</span> Telemetría</a>
+        <a href="#comparison"><span>◱</span> Comparar sitios</a>
+        <a href="#history"><span>◷</span> Historial</a>
+        <a href="#reports"><span>▤</span> Informes</a>
+      </nav>
+      <div class="sidebar-status">
+        <div class="network-line"><i class="status-dot"></i><b>APIs NASA opcionales</b><span>LOCAL</span></div>
+        <small>Horizons / PDS requieren internet<br>SPICE usa kernels configurados localmente</small>
+      </div>
+      <div class="ground-station"><span class="eyebrow">MARCO DE REFERENCIA</span><b>LUNA · CUERPO FIJO</b><small>Coordenadas lunares · UTC</small></div>
+      <div class="sidebar-foot">SELENE OPS / v1.1<br>POLAR SITE ANALYSIS</div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-title"><span class="mission-emblem"><img src="{{ url_for('static', filename='img/mission-emblem.png') }}" alt="Emblema de la misión"></span><div><div class="eyebrow">MISSION CONTROL <span class="online-chip"><i></i> SISTEMA LOCAL</span></div><h1>Lunar Landing Analyzer</h1></div></div>
+        <div class="topbar-right"><span class="utc-badge">UTC <b id="clock">--:--</b></span><span class="view-chip"><span>◎</span> POLO SUR LUNAR</span><span class="avatar">LA</span></div>
+      </header>
+
+      <section id="overview" class="dashboard-top">
+        <div class="dashboard-left">
+          <article id="site-selection" class="card globe-card">
+            <header class="mission-heading">
+              <div class="mission-badge"><img src="{{ url_for('static', filename='img/mission-emblem.png') }}" alt="Emblema de la misión"></div>
+              <div class="mission-title">
+                <div class="eyebrow"><span id="missionNameBadge">LUNAR SURVEY</span><span class="operational-badge"><i></i> ANÁLISIS LOCAL</span></div>
+                <h2 id="missionDisplayName">ARTEMIS DEMO</h2>
+                <p id="missionMeta">Polo sur lunar <span>·</span> referencia de demostración</p>
+              </div>
+              <div class="mission-id"><span>SITIO / COORDENADAS</span><b id="mapCoords">89.50° S, 0.00°</b><small>MARCO LUNAR FIJO</small></div>
+            </header>
+
+            <div class="globe-stage map-frame">
+              <div class="globe-backdrop"></div>
+              <div class="orbit-ring orbit-ring-a"></div><div class="orbit-ring orbit-ring-b"></div>
+              <canvas id="lunarGlobe" role="img" aria-label="Globo lunar tridimensional interactivo; solo se representa el hemisferio frontal visible"></canvas>
+              <img class="orbiter-satellite" src="{{ url_for('static', filename='img/lander.svg') }}" alt="Ilustración del módulo de aterrizaje">
+              <div class="globe-topline"><span id="globeStatus">HEMISFERIO VISIBLE · 180°</span><span class="view-label"><span class="hemisphere-glyph" aria-hidden="true"></span>CARA VISIBLE · 180° <i></i></span></div>
+              <div id="globeCallout" class="globe-callout"><span class="callout-line"></span><b id="globeSiteName">POLO SUR</b><small id="globeCalloutCoord">89.50° S · 0.00°</small></div>
+              <div class="globe-legend"><span><i class="legend-candidate"></i>Candidato</span><span><i class="legend-history"></i>Histórico</span><span><i class="legend-selected"></i>Seleccionado</span></div>
+              <div class="zoom-controls"><button id="zoomIn" type="button" aria-label="Acercar">+</button><button id="zoomOut" type="button" aria-label="Alejar">−</button><button id="zoomReset" type="button" aria-label="Restablecer vista">↺</button></div>
+              <div class="globe-instructions">ARRASTRA PARA ROTAR <span>·</span> RUEDA PARA ZOOM</div>
+            </div>
+
+            <form id="missionForm" class="mission-config">
+              <div class="config-heading"><span class="config-icon">⌘</span><div><b>CONFIGURAR MISIÓN</b><small>Los cálculos usan la fecha y hora UTC indicadas</small></div></div>
+              <div class="config-fields">
+                <div class="form-field mission-name-field"><label for="missionName">Nombre de misión</label><input id="missionName" maxlength="100" value="Artemis demo" autocomplete="off"></div>
+                <div class="form-field site-field"><label for="siteSelect">Sitio lunar</label><select id="siteSelect"></select></div>
+                <div class="form-field"><label for="latitude">Latitud</label><div class="input-with-unit"><input id="latitude" type="number" step="0.0001" min="-90" max="90" value="-89.5"><span>°</span></div></div>
+                <div class="form-field"><label for="longitude">Longitud</label><div class="input-with-unit"><input id="longitude" type="number" step="0.0001" min="-180" max="180" value="0"><span>°</span></div></div>
+                <div class="form-field date-field"><label for="missionTime">Fecha y hora · UTC</label><input id="missionTime" type="datetime-local" value="{{ reference_time }}"></div>
+                <button id="evaluateButton" class="primary-button" type="submit"><span>Evaluar sitio</span><b>→</b></button>
+              </div>
+              <div id="formMessage" class="form-message" role="status"></div>
+            </form>
+          </article>
+        </div>
+
+        <div class="dashboard-right">
+          <article id="analysis" class="card telemetry-card">
+            <div class="panel-heading"><div><div class="eyebrow">DATOS DE MISIÓN</div><h2>Telemetría del sitio</h2></div><span class="live-badge"><i></i> EN VIVO</span></div>
+            <div class="telemetry-tabs" role="tablist" aria-label="Categorías de telemetría">
+              <button class="active" type="button" role="tab" aria-selected="true" data-telemetry-tab="overview">Resumen</button>
+              <button type="button" role="tab" aria-selected="false" data-telemetry-tab="thermal">Térmica</button>
+              <button type="button" role="tab" aria-selected="false" data-telemetry-tab="illumination">Luz</button>
+              <button type="button" role="tab" aria-selected="false" data-telemetry-tab="communication">Comms</button>
+            </div>
+            <div id="emptyState" class="empty-state"><span class="telemetry-pulse"></span><span>Calculando condiciones iniciales...</span></div>
+            <div id="results" class="telemetry-content hidden">
+              <section class="telemetry-pane active" data-telemetry-pane="overview">
+                <div class="telemetry-grid">
+                  <div class="telemetry-column">
+                    <div class="telemetry-row"><span><i>⌖</i> Latitud del sitio</span><b id="telemetryLatitude">—</b></div>
+                    <div class="telemetry-row"><span><i>⌖</i> Longitud del sitio</span><b id="telemetryLongitude">—</b></div>
+                    <div class="telemetry-row"><span><i>◉</i> Pendiente ref.</span><b id="telemetrySlope">—</b></div>
+                    <div class="telemetry-row"><span><i>◷</i> Fecha de misión</span><b id="telemetryDate">—</b></div>
+                  </div>
+                  <div class="telemetry-column">
+                    <div class="telemetry-row"><span><i>°</i> Temperatura modelo</span><b id="telemetryTemperature">—</b></div>
+                    <div class="telemetry-row"><span><i>☼</i> Elevación solar</span><b id="telemetrySun">—</b></div>
+                    <div class="telemetry-row"><span><i>⌁</i> Tierra visible</span><b id="telemetryComm">—</b></div>
+                    <div class="telemetry-row"><span><i>◇</i> Iluminación</span><b id="telemetryIllumination">—</b></div>
+                  </div>
+                </div>
+                <div class="telemetry-note"><span>i</span> Visibilidad terrestre geométrica; no garantiza un enlace de radio.</div>
+              </section>
+              <section class="telemetry-pane" data-telemetry-pane="thermal">
+                <div class="thermal-readout"><span>TEMPERATURA DE EQUILIBRIO</span><b id="temperatureValue">—</b><small id="thermalModel">Modelo local</small></div>
+                <div class="telemetry-row"><span>Radiación solar incidente</span><b id="thermalIncident">—</b></div>
+                <div class="telemetry-row"><span>Energía absorbida</span><b id="thermalAbsorbed">—</b></div>
+                <div class="telemetry-row"><span>Radiación emitida</span><b id="thermalEmitted">—</b></div>
+                <div class="energy-details" id="energyDetails"></div>
+                <div class="science-note">Balance radiativo aproximado; no son mediciones de Diviner.</div>
+              </section>
+              <section class="telemetry-pane" data-telemetry-pane="illumination">
+                <div class="thermal-readout"><span>ESTADO SOLAR ACTUAL</span><b id="illuminationValue">—</b><small id="sunElevation">Elevación solar —</small></div>
+                <div class="telemetry-row"><span>Horas de luz estimadas · 30 d</span><b id="sunHours">—</b></div>
+                <div class="illumination-meter"><i id="temperatureBar"></i></div>
+                <div class="solar-coverage">
+                  <div><span>Superficie lunar iluminada</span><b id="globalLitArea">—</b></div>
+                  <div><span>Superficie en oscuridad</span><b id="globalDarkArea">—</b></div>
+                  <div><span>Disco visible iluminado</span><b id="visibleDiskIllumination">—</b></div>
+                </div>
+                <div class="telemetry-row"><span>Irradiancia normal E₀</span><b id="solarE0">—</b></div>
+                <div class="telemetry-row"><span>Distancia Sol–Luna</span><b id="solarDistance">—</b></div>
+                <div class="telemetry-row"><span>Punto subsolar · lat., lon.</span><b id="solarSubpoint">—</b></div>
+                <div class="telemetry-row"><span>Incidencia · coseno μ</span><b id="solarIncidence">—</b></div>
+                <div class="telemetry-row"><span>Irradiancia en el sitio</span><b id="localIrradiance">—</b></div>
+                <div class="telemetry-row"><span>Flujo reflejado estimado</span><b id="reflectedFlux">—</b></div>
+                <div class="telemetry-row"><span>Sombra topográfica</span><b id="topographicShadow">—</b></div>
+                <div class="telemetry-note">Globo sombreado con este vector solar. Superficie global de esfera ideal; fase del disco visible desde la Tierra. Sin DEM validado no se calculan sombras de relieve.</div>
+              </section>
+              <section class="telemetry-pane" data-telemetry-pane="communication">
+                <div class="thermal-readout"><span>VISIBILIDAD GEOMÉTRICA DE LA TIERRA</span><b id="communicationValue">—</b><small id="earthElevation">Elevación —</small></div>
+                <div class="telemetry-row"><span>Enlace de retransmisión</span><b id="relayValue">—</b></div>
+                <div class="telemetry-note">Antenas, obstáculos, disponibilidad del relay y potencia no se modelan.</div>
+              </section>
+            </div>
+          </article>
+
+          <article class="card status-card">
+            <div class="panel-heading"><div><div class="eyebrow">EVALUACIÓN DEL MODELO</div><h2>Estado de misión</h2></div><span class="status-orb">◈</span></div>
+            <div class="mission-progress">
+              <div class="progress-step complete"><i>✓</i><span>Coordenadas</span><small>Definidas</small></div>
+              <div class="progress-track"><i></i></div>
+              <div class="progress-step complete"><i>✓</i><span>Condiciones</span><small>Calculadas</small></div>
+              <div class="progress-track"><i></i></div>
+              <div class="progress-step"><i>◇</i><span>Validación</span><small>Requerida</small></div>
+            </div>
+            <div class="verdict-strip"><span>VIABILIDAD ORIENTATIVA</span><b id="verdictValue">En espera</b></div>
+            <p id="verdictSummary" class="status-summary">Previsualización local; ajusta parámetros y ejecuta una evaluación.</p>
+            <details class="status-details">
+              <summary>Ver factores, riesgos y datos faltantes</summary>
+              <div id="diagnosticContent" class="diagnostic-content"></div>
+              <p id="siteScience" class="site-science"></p>
+            </details>
+            <div id="reportActions" class="report-buttons"><a id="pdfLink" class="secondary-button disabled" href="#">↓ PDF</a><a id="csvLink" class="secondary-button disabled" href="#">↓ CSV</a></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="nasa-integrations" class="card bottom-wide integration-section">
+        <div class="section-heading">
+          <div><div class="eyebrow">SERVICIOS Y ARCHIVOS CIENTÍFICOS</div><h2>Integraciones NASA</h2></div>
+          <button id="searchProductsButton" type="button" class="secondary-button">Buscar productos LRO en esta zona <span>→</span></button>
+        </div>
+        <div id="integrationStatus" class="integration-status" aria-live="polite">Consultando estado de las integraciones…</div>
+        <div id="productResults" class="product-results" aria-live="polite">La búsqueda PDS es bajo demanda. Solo presenta metadatos y enlaces; no descarga ni procesa productos.</div>
+      </section>
+
+      <section id="mission-data" class="dashboard-bottom">
+        <article class="card data-card window-card">
+          <div class="card-heading"><div><div class="eyebrow">PRÓXIMOS 30 DÍAS</div><h2>Ventanas operativas</h2></div><span class="heading-mark">◷</span></div>
+          <p class="card-subtitle">Cribado ambiental cada 6 h · no es una ventana orbital de lanzamiento</p>
+          <div id="windowsChart" class="compact-chart"></div>
+          <div class="window-legend"><span><i></i> Índice de condiciones orientativo</span><small>0—100</small></div>
+          <div class="card-footnote">Efemérides analíticas de baja precisión; no es una simulación SPICE ni incluye sombras DEM.</div>
+        </article>
+
+        <article class="card data-card timeline-card">
+          <div class="card-heading"><div><div class="eyebrow">SIMULACIÓN TEMPORAL</div><h2>Perfil de 72 horas</h2></div><span class="chart-units">°C / °</span></div>
+          <div class="chart-legend"><span><i class="legend-temp"></i> Temperatura</span><span><i class="legend-sun"></i> Elevación solar</span></div>
+          <div id="timelineChart" class="chart-wrap" aria-label="Gráfica temporal"></div>
+          <div class="timeline-controls"><button id="timelineBack" type="button" class="quiet-button">← 12 h</button><input id="timelineSlider" type="range" min="0" max="72" step="2" value="0"><span id="timelineOffset">T + 00 h</span><button id="timelinePlay" type="button" class="quiet-button">▶</button></div>
+          <div class="timeline-foot"><span>Fecha analizada</span><b id="analysisTime">14 nov 2026 · 12:00 UTC</b></div>
+          <div class="card-footnote">La curva de 72 h usa el modelo analítico; Horizons/SPICE se aplican al instante evaluado.</div>
+        </article>
+
+        <article class="card data-card energy-card">
+          <div class="card-heading"><div><div class="eyebrow">MODELO TÉRMICO</div><h2>Balance de energía</h2></div><span class="heading-mark cyan">⌁</span></div>
+          <div id="energyDiagram" class="energy-diagram"></div>
+          <div class="energy-mini-note">Absorción solar y emisión térmica calculadas para la fecha seleccionada.</div>
+          <div class="card-footnote">El resultado no incorpora inercia transitoria del regolito ni datos Diviner.</div>
+        </article>
+      </section>
+
+      <section id="comparison" class="card bottom-wide comparison-section">
+        <div class="section-heading"><div><div class="eyebrow">ANÁLISIS COMPARATIVO</div><h2>Comparar sitios de aterrizaje</h2></div><button id="compareButton" type="button" class="secondary-button">Comparar seleccionados <span>→</span></button></div>
+        <div id="comparisonSites" class="comparison-select"></div>
+        <div id="comparisonOutput" class="hidden comparison-output"></div>
+      </section>
+
+      <section id="history" class="card bottom-wide history-section">
+        <div class="section-heading"><div><div class="eyebrow">REGISTRO LOCAL · SQLITE</div><h2>Evaluaciones recientes</h2></div><span class="section-note">Guardadas únicamente en este equipo</span></div>
+        <div class="history-card"><div class="history-head"><span>MISIÓN / SITIO</span><span>COORDENADAS</span><span>FECHA UTC</span><span>INFORME</span></div><div id="historyList" class="history-list"><div class="history-empty">Todavía no hay evaluaciones guardadas.</div></div></div>
+      </section>
+      <div id="reports" class="app-footer"><span>SELENE OPS · LUNAR LANDING ANALYZER</span><span>Prototipo científico · verifica fuentes y limitaciones antes de cualquier uso de ingeniería</span></div>
+    </main>
+  </div>
+</body>
+</html>

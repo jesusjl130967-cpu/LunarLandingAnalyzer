@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+  <defs>
+    <radialGradient id="moon" cx="34%" cy="27%" r="74%">
+      <stop offset="0" stop-color="#e8e5dc"/>
+      <stop offset=".43" stop-color="#bcb9b0"/>
+      <stop offset=".78" stop-color="#8a8881"/>
+      <stop offset="1" stop-color="#575853"/>
+    </radialGradient>
+    <clipPath id="clip"><circle cx="120" cy="120" r="104"/></clipPath>
+  </defs>
+  <circle cx="120" cy="120" r="104" fill="url(#moon)"/>
+  <g clip-path="url(#clip)">
+    <g fill="#555650" opacity=".34">
+      <path d="M37 73c13-23 42-29 61-16 12 8 15 24 6 35-10 13-27 12-36 25-11 16-29 12-39-1-11-14-2-29 8-43Z"/>
+      <path d="M126 31c24-13 51-5 60 14 7 15-2 26-15 33-15 8-17 20-31 21-18 2-31-13-28-30 2-15 2-30 14-38Z"/>
+      <path d="M125 117c19-20 50-17 63 1 11 15 4 31-10 40-14 9-24 8-34 25-11 18-34 20-47 8-15-13-11-30-1-46 8-12 17-17 29-28Z"/>
+      <path d="M44 145c15-12 33-7 39 5 7 13-1 22-12 29-12 8-13 20-26 20-14 0-23-12-19-26 3-12 8-21 18-28Z"/>
+    </g>
+    <g fill="#565650" opacity=".64">
+      <circle cx="68" cy="71" r="14"/><circle cx="148" cy="59" r="19"/>
+      <circle cx="177" cy="120" r="12"/><circle cx="101" cy="143" r="25"/>
+      <circle cx="157" cy="181" r="16"/><circle cx="52" cy="161" r="8"/>
+      <circle cx="125" cy="96" r="7"/><circle cx="82" cy="111" r="5"/>
+      <circle cx="190" cy="79" r="6"/><circle cx="116" cy="187" r="7"/>
+      <circle cx="43" cy="112" r="5"/><circle cx="176" cy="154" r="4"/>
+      <circle cx="92" cy="49" r="4"/><circle cx="135" cy="128" r="5"/>
+    </g>
+    <g fill="#d7d4ca" opacity=".68">
+      <circle cx="66" cy="68" r="10"/><circle cx="145" cy="56" r="14"/>
+      <circle cx="174" cy="117" r="8"/><circle cx="97" cy="139" r="18"/>
+      <circle cx="154" cy="177" r="11"/><circle cx="49" cy="158" r="5"/>
+      <circle cx="123" cy="94" r="4"/><circle cx="80" cy="109" r="3"/>
+      <circle cx="188" cy="77" r="4"/><circle cx="113" cy="185" r="4"/>
+      <circle cx="41" cy="110" r="3"/><circle cx="174" cy="152" r="2.5"/>
+    </g>
+    <g fill="#f3f0e5" opacity=".17">
+      <circle cx="63" cy="65" r="5"/><circle cx="141" cy="52" r="7"/>
+      <circle cx="92" cy="136" r="10"/><circle cx="150" cy="173" r="6"/>
+      <circle cx="120" cy="92" r="2.5"/><circle cx="47" cy="156" r="2.5"/>
+    </g>
+    <g fill="#efede5" opacity=".42">
+      <circle cx="31" cy="45" r="1.2"/><circle cx="101" cy="86" r="1"/>
+      <circle cx="164" cy="41" r="1.3"/><circle cx="198" cy="103" r="1"/>
+      <circle cx="73" cy="187" r="1.2"/><circle cx="126" cy="207" r="1"/>
+      <circle cx="188" cy="175" r="1.1"/><circle cx="58" cy="127" r="1"/>
+      <circle cx="109" cy="31" r="1.1"/><circle cx="35" cy="188" r="1"/>
+    </g>
+  </g>
+  <path d="M120 16a104 104 0 0 0 0 208c-40-26-62-66-62-104s22-78 62-104Z" fill="#252522" opacity=".2"/>
+</svg>

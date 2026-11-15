@@ -1,0 +1,52 @@
+[
+  {
+    "id": "shackleton-demo",
+    "name": "Borde del cráter Shackleton (referencia)",
+    "latitude": -89.5,
+    "longitude": 0.0,
+    "kind": "candidate",
+    "terrain": {"slope_deg": 7.0, "roughness": "Relieve de borde; estimación", "craters": "Cráter Shackleton cercano", "albedo": 0.12, "emissivity": 0.95, "quality": "Coordenada representativa de demostración, no punto oficial de aterrizaje"},
+    "science": "Región polar de interés para estudiar iluminación y volátiles; la presencia de hielo en este punto no está confirmada por este aplicativo.",
+    "source": "NASA Moon to Mars: https://www.nasa.gov/humans-in-space/artemis/"
+  },
+  {
+    "id": "de-gerlache-demo",
+    "name": "Región de Gerlache (referencia)",
+    "latitude": -88.0,
+    "longitude": -90.0,
+    "kind": "candidate",
+    "terrain": {"slope_deg": 5.5, "roughness": "Referencia de demostración", "craters": "Terreno polar accidentado", "albedo": 0.13, "emissivity": 0.95, "quality": "Coordenada representativa; no DEM consultado"},
+    "science": "Región de referencia polar. La topografía y los posibles recursos necesitan verificación con datos de misión.",
+    "source": "NASA Moon Trek: https://trek.nasa.gov/moon/"
+  },
+  {
+    "id": "amundsen-demo",
+    "name": "Borde del cráter Amundsen (referencia)",
+    "latitude": -84.5,
+    "longitude": 85.0,
+    "kind": "candidate",
+    "terrain": {"slope_deg": 12.0, "roughness": "Referencia de demostración", "craters": "Cráter Amundsen cercano", "albedo": 0.11, "emissivity": 0.94, "quality": "Coordenada y pendiente demostrativas; no DEM consultado"},
+    "science": "Punto de comparación geológica en latitud alta. No se afirma detección de hielo en la ubicación.",
+    "source": "Lunar and Planetary Institute: https://www.lpi.usra.edu/"
+  },
+  {
+    "id": "apollo17",
+    "name": "Apollo 17 (histórico)",
+    "latitude": 20.19,
+    "longitude": 30.77,
+    "kind": "historical",
+    "terrain": {"slope_deg": 3.0, "roughness": "Referencia histórica", "craters": "Valle Taurus-Littrow", "albedo": 0.12, "emissivity": 0.95, "quality": "Coordenada aproximada del sitio histórico"},
+    "science": "Sitio histórico de alunizaje tripulado Apollo 17 (1972).",
+    "source": "NASA Apollo 17: https://www.nasa.gov/mission/apollo-17/"
+  },
+  {
+    "id": "chang-e4",
+    "name": "Chang'e 4 (histórico)",
+    "latitude": -45.46,
+    "longitude": 177.59,
+    "kind": "historical",
+    "terrain": {"slope_deg": 4.0, "roughness": "Referencia histórica", "craters": "Cráter Von Kármán", "albedo": 0.12, "emissivity": 0.95, "quality": "Coordenada histórica aproximada"},
+    "science": "Sitio del aterrizaje de Chang'e 4 en la cara oculta (2019).",
+    "source": "NASA NSSDC: https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2018-103A"
+  }
+]
