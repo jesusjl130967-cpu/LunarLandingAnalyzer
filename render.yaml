@@ -2,7 +2,14 @@ services:
   - type: web
     name: lunar-landing-analyzer
     runtime: python
-    plan: free
+    plan: 0.5c-512mb
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     healthCheckPath: /health
+    disk:
+      name: lunar-database
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: LUNAR_DATABASE_PATH
+        value: /var/data/lunar_analyzer.sqlite3
